@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>chat room</title>
+    <style>
+        #wrapper {
+            width: 500px;
+            border: 1px solid silver;
+            border-radius: 5px;
+        }
+
+        textarea {
+            width: 250px;
+            height: 100px;
+        }
+
+        #content {
+            overflow: auto;
+            padding-bottom: 50px;
+            height: 500px;
+            padding-left: 10px;
+            padding-right: 10px;
+
+        }
+
+        .message-line {
+            margin-top: 10px;
+        }
+
+        .message-line .username {
+            display: inline-block;
+            font-size: 14px;
+        }
+
+        .message-line .message {
+            margin-top: 5px;
+        }
+
+        .sender {
+            padding-top: 10px;
+        }
+
+        input {
+            width: 250px;
+            padding: 5px 8px;
+        }
+    </style>
+</head>
+
+<body>
+    <div id='wrapper'>
+        <div class="header" id='header'>
+
+        </div>
+        <div class='content' id='content'>
+        </div>
+        <div class="sender" id='sender'>
+            <input type="text" id="messageText" autocomplete="off" onkeydown="keydown(event)" />
+            <button onclick="sendMessage()">发送</button>
+        </div>
+    </div>
+
+    <script>
+        var ws = null;
+        var messageTemplate = `
+        <div class="message-line">
+                <div class="username">
+                    {{username}}
+                </div>
+                <div class="message">
+                    {{message}}
+                </div>
+            </div>
+        `
+
+        function createWs() {
+            if (window.location.protocol == 'http:') {
+                var url = `ws://${window.location.host}/ws`
+            } else {
+                var url = `wss://${window.location.host}/ws`
+            }
+            var ws = new WebSocket(url);
+            ws.onmessage = function (event) {
+                var messageTemplate = `
+                                <div class="username">
+                                    {{username}}
+                                </div>
+                                <div class="message">
+                                    {{message}}
+                                </div>
+                        `
+
+                var messages = document.getElementById('content')
+                var div = document.createElement('div')
+                div.className = "message-line"
+                // var message = document.createElement('li')
+
+                var data = JSON.parse(event.data)
+                console.log(data)
+                if (data.message.type === "text") {
+                    div.innerHTML = messageTemplate.replace('{{username}}', data.userinfo.name).replace('{{message}}', data.message.content)
+                } else if (data.message.type === "image") {
+                    var content = document.createElement('img')
+                    content.src = data.message.content
+                }
+                messages.appendChild(div)
+            };
+            ws.onclose = function (event) {
+                window.location.reload();
+            };
+            ws.onerror = function (ev) {
+                console.log(ev)
+                alert("无法连接服务器")
+            }
+            return ws
+        }
+        var ws = createWs();
+
+        function keydown(event) {
+            if (event.code == 'Enter') {
+                sendMessage()
+            }
+        }
+
+        function sendMessage(event) {
+            var input = document.getElementById("messageText")
+            var data = {
+                "type": "text",
+                "content": input.value
+            }
+
+            ws.send(JSON.stringify(data))
+            input.value = ''
+            event.preventDefault()
+        }
+    </script>
+</body>
+
+</html>
