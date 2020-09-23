@@ -4,10 +4,22 @@
 <head>
     <title>chat room</title>
     <style>
+        html,
+        body {
+            margin: 0;
+            padding: 0;
+            height: 100%;
+            width: 100%;
+            background-color: rgba(0, 0, 0, 0.01);
+        }
+
         #wrapper {
+            margin: auto;
             width: 500px;
-            border: 1px solid silver;
             border-radius: 5px;
+            box-shadow: silver 1px 1px;
+            box-shadow: silver 0px 0px 4px;
+            height: 100%;
         }
 
         textarea {
@@ -18,7 +30,6 @@
         #content {
             overflow: auto;
             padding-bottom: 50px;
-            height: 500px;
             padding-left: 10px;
             padding-right: 10px;
 
@@ -39,6 +50,7 @@
 
         .sender {
             padding-top: 10px;
+            height: 50px;
         }
 
         input {
@@ -48,7 +60,7 @@
     </style>
 </head>
 
-<body>
+<body onload="docLoaded()" onresize="docLoaded()">
     <div id='wrapper'>
         <div class="header" id='header'>
 
@@ -62,17 +74,11 @@
     </div>
 
     <script>
+        function docLoaded() {
+            var height = window.innerHeight
+            document.getElementById('content').style.height=(height-95)+'px'
+        }
         var ws = null;
-        var messageTemplate = `
-        <div class="message-line">
-                <div class="username">
-                    {{username}}
-                </div>
-                <div class="message">
-                    {{message}}
-                </div>
-            </div>
-        `
 
         function createWs() {
             if (window.location.protocol == 'http:') {
@@ -84,10 +90,10 @@
             ws.onmessage = function (event) {
                 var messageTemplate = `
                                 <div class="username">
-                                    {{username}}
+                                   
                                 </div>
                                 <div class="message">
-                                    {{message}}
+                                    {{username}}: {{message}}
                                 </div>
                         `
 
@@ -105,6 +111,7 @@
                     content.src = data.message.content
                 }
                 messages.appendChild(div)
+                document.querySelector('.message-line:last-child').scrollIntoView()
             };
             ws.onclose = function (event) {
                 window.location.reload();
@@ -132,7 +139,6 @@
 
             ws.send(JSON.stringify(data))
             input.value = ''
-            event.preventDefault()
         }
     </script>
 </body>

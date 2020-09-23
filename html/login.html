@@ -29,7 +29,8 @@
         #actions {
             margin-top: 10px;
         }
-        .button{
+
+        .button {
             padding: 2px 6px;
             border: 1px solid silver;
             border-radius: 2px;
@@ -37,10 +38,11 @@
             display: inline-block;
             width: 250px;
             margin-top: 5px;
-            color:black;
+            color: black;
             text-decoration: none;
         }
-        .button:hover{
+
+        .button:hover {
             background-color: darkcyan;
             color: white;
             border: 1px solid white;
@@ -56,12 +58,12 @@
         </form>
         <div id='actions'>
             <span onclick="login()" class="button">登录</span><br>
-            
+
 
             <a href="/regist_page" class="button">注册</a><br>
             <span onclick="forgot_password()" id='forgot-password' class="button">忘记密码</span>
             <div>
-                
+
             </div>
         </div>
 
@@ -69,9 +71,12 @@
     </div>
 </body>
 <script>
+    document.onload = function () {
+        var height =window.screen.availHeight
+    }
     function forgot_password() {
-        var email=document.getElementById('email').value
-        if(!email){
+        var email = document.getElementById('email').value
+        if (!email) {
             alert('填写邮箱')
         }
         document.getElementById('forgot-password').innerHTML = '发送重置连接到邮箱中........'
@@ -82,13 +87,13 @@
                 var result = JSON.parse(xhr.responseText)
                 if (result.code != 0) {
                     alert(result.message)
-                }else{
+                } else {
                     document.getElementById('forgot-password').innerHTML = '发送成功'
-                    setTimeout(function(){
+                    setTimeout(function () {
                         document.getElementById('forgot-password').innerHTML = '没有收到，再次发送'
-                    },2000)
+                    }, 2000)
                 }
-                
+
             }
         }
         xhr.open('get', `/users/reset_password?email=${email}`, true)

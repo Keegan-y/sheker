@@ -2,3 +2,5 @@ motor
 fastapi
 uvicorn
 pyjwt
+redis
+qiniu
