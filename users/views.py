@@ -1,8 +1,9 @@
 import random
 import uuid
-import json
+import os
 
-from fastapi.responses import JSONResponse
+from fastapi.responses import JSONResponse, FileResponse
+from fastapi import Request, UploadFile, File
 
 from manage import app
 from users.form import Login, Regist, UpdatePassword
@@ -14,6 +15,8 @@ from common.mongodb import mongodb, get_groups
 from common.password import gen_password
 from common.qiniu_storage import generate_upload_token
 from common.response import success_response
+from common.qiniu_storage import upload_file
+from config import BASE_DIR
 
 
 @app.get('/users/groups')
@@ -121,4 +124,22 @@ async def update_password(data: UpdatePassword):
     token = gen_token(userinfo)
     response = JSONResponse(content=success_response({'token': token}))
     response.set_cookie('token', token, max_age=7200)
+    return response
+
+
+@app.post("/users/files")
+async def create_upload_file(request: Request):
+    form = await request.form()
+    file = form.get('file')
+    key = str(uuid.uuid4())
+    data = await file.read()
+    with open(os.path.join(BASE_DIR, f'static/images/{key}'), 'wb') as f:
+        f.write(data)
+    return success_response({'key': key})
+
+
+@app.get('/static/{filepath:path}')
+async def get_file(filepath: str):
+    response = FileResponse(os.path.join(BASE_DIR, 'static', filepath), headers={
+                            'content-type': 'image/png'})
     return response

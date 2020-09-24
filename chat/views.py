@@ -3,6 +3,7 @@ import json
 import uuid
 import time
 import os
+from html import escape
 
 from fastapi import Cookie
 from fastapi.responses import HTMLResponse, RedirectResponse
@@ -101,9 +102,12 @@ async def websocket_endpoint(websocket: WebSocket):
         while True:
             data = await websocket.receive_text()
             json_data = json.loads(data)
+            json_data['content'] = escape(json_data['content'])
 
             message = {'_id': str(uuid.uuid4()),
-                       'time': time.time()*1000, 'message': json_data, 'userinfo': userinfo}
+                       'time': time.time()*1000,
+                       'message': json_data,
+                       'userinfo': userinfo}
             await mongodb.messages.insert_one(message)
             await manager.broadcast(json.dumps(message))
     except WebSocketDisconnect:

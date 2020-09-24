@@ -24,6 +24,9 @@ def login_mail_server():
         print(e)
 
 
+mail_server = login_mail_server()
+
+
 def create_ressetpassword_mail(receiver_email, token):
     message = MIMEMultipart("alternative")
 
@@ -77,12 +80,12 @@ def create_code_mail(receiver_email, code):
 
 
 def send_mail_code(receiver_email, code):
-    server = login_mail_server()
+
     message = create_code_mail(receiver_email, code)
-    server.sendmail(MAIL_SENDER, receiver_email, message)
+    main_server.sendmail(MAIL_SENDER, receiver_email, message)
 
 
 def send_mail_reset(receiver_email, token):
-    server = login_mail_server()
+
     message = create_ressetpassword_mail(receiver_email, token)
-    server.sendmail(MAIL_SENDER, receiver_email, message)
+    main_server.sendmail(MAIL_SENDER, receiver_email, message)

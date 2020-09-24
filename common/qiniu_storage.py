@@ -1,4 +1,6 @@
 from qiniu import Auth
+from qiniu import put_data
+import requests
 
 from config import QINIU_ACCESS_KEY, QINIU_SECRET_KEY, QINIU_BUCKET_NAME, QINIU_TOKEN_EXPIRE
 
@@ -24,3 +26,15 @@ def generate_upload_token():
     # 生成上传 Token，可以指定过期时间等
     token = q.upload_token(bucket_name, key, QINIU_TOKEN_EXPIRE)
     return token
+
+
+def upload_file(stream):
+    token = generate_upload_token()
+    # resp = requests.post('http://up-z2.qiniup.com/', data={
+    #     'token': token,
+    #     'file': stream
+    # })
+    # import ipdb
+    # ipdb.set_trace()
+    ret, info = put_data(token, key=None, data=stream)
+    return ret['key']

@@ -69,14 +69,41 @@
         </div>
         <div class="sender" id='sender'>
             <input type="text" id="messageText" autocomplete="off" onkeydown="keydown(event)" />
+            <input type="file" style="display: none;" id='image' onchange="fileChange()">
             <button onclick="sendMessage()">发送</button>
+            <button onclick="sendImage()">发送图片</button>
         </div>
     </div>
 
     <script>
+        function sendImage() {
+            var el = document.getElementById('image')
+            el.click()
+        }
+        function fileChange() {
+            var el = document.getElementById('image')
+            console.log(el.value)
+            var formdata = new FormData()
+            formdata.append('file', el.files[0])
+            var xhr = new XMLHttpRequest()
+            xhr.onreadystatechange = function () {
+                if (xhr.readyState == 4) {
+                    var res = JSON.parse(xhr.responseText)
+                    console.log(res)
+                    var data = {
+                        "type": "image",
+                        "content": res.data.key
+                    }
+                    ws.send(JSON.stringify(data))
+                }
+
+            }
+            xhr.open('post', '/users/files', true)
+            xhr.send(formdata)
+        }
         function docLoaded() {
             var height = window.innerHeight
-            document.getElementById('content').style.height=(height-95)+'px'
+            document.getElementById('content').style.height = (height - 95) + 'px'
         }
         var ws = null;
 
@@ -107,8 +134,10 @@
                 if (data.message.type === "text") {
                     div.innerHTML = messageTemplate.replace('{{username}}', data.userinfo.name).replace('{{message}}', data.message.content)
                 } else if (data.message.type === "image") {
-                    var content = document.createElement('img')
-                    content.src = data.message.content
+                    var img = `
+                        <img src="/static/images/${data.message.content}">
+                    `
+                    div.innerHTML = messageTemplate.replace('{{username}}', data.userinfo.name).replace('{{message}}', img)
                 }
                 messages.appendChild(div)
                 document.querySelector('.message-line:last-child').scrollIntoView()
