@@ -47,9 +47,16 @@
         .message-line .message {
             margin-top: 5px;
         }
-    .message-line .message img{
-        width: 100%;
-    }
+
+        .message-line .message .img {
+            max-width: 50%;
+            max-height: 150px;
+            min-height: 100px;
+            background-position: left;
+            background-size: contain;
+            cursor: pointer;
+            background-repeat: no-repeat;
+        }
 
         .sender {
             padding-top: 10px;
@@ -59,6 +66,22 @@
         input {
             width: 250px;
             padding: 5px 8px;
+        }
+
+        .cover-image-div {
+            width: 100%;
+            min-height: 100%;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            background-color: rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+
+        .cover-image-div img {
+            margin: auto;
+            width: 80%;
         }
     </style>
 </head>
@@ -79,13 +102,24 @@
     </div>
 
     <script>
+        function showImage(url) {
+            let imgdiv = document.createElement('div')
+            imgdiv.className = 'cover-image-div'
+            let img = document.createElement('img')
+            img.src = url
+            imgdiv.appendChild(img)
+            document.body.appendChild(imgdiv)
+
+            imgdiv.onclick = function () {
+                document.body.removeChild(imgdiv)
+            }
+        }
         function sendImage() {
             var el = document.getElementById('image')
             el.click()
         }
         function fileChange() {
             var el = document.getElementById('image')
-            console.log(el.value)
             var formdata = new FormData()
             formdata.append('file', el.files[0])
             var xhr = new XMLHttpRequest()
@@ -98,6 +132,8 @@
                         "content": res.data.key
                     }
                     ws.send(JSON.stringify(data))
+                    el.files = null
+                    el.value = null
                 }
 
             }
@@ -138,7 +174,7 @@
                     div.innerHTML = messageTemplate.replace('{{username}}', data.userinfo.name).replace('{{message}}', data.message.content)
                 } else if (data.message.type === "image") {
                     var img = `
-                        <img src="/static/images/${data.message.content}">
+                        <div class='img' style="background-image:url('/static/images/${data.message.content}')" onclick="showImage('/static/images/${data.message.content}')"> </div>
                     `
                     div.innerHTML = messageTemplate.replace('{{username}}', data.userinfo.name).replace('{{message}}', img)
                 }
