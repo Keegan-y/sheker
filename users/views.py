@@ -3,7 +3,7 @@ import uuid
 import os
 
 from fastapi.responses import JSONResponse, FileResponse
-from fastapi import Request, UploadFile, File
+from fastapi import Request
 
 from manage import app
 from users.form import Login, Regist, UpdatePassword
@@ -15,7 +15,6 @@ from common.mongodb import mongodb, get_groups
 from common.password import gen_password
 from common.qiniu_storage import generate_upload_token
 from common.response import success_response
-from common.qiniu_storage import upload_file
 from config import BASE_DIR
 
 
@@ -140,6 +139,6 @@ async def create_upload_file(request: Request):
 
 @app.get('/static/{filepath:path}')
 async def get_file(filepath: str):
-    response = FileResponse(os.path.join(BASE_DIR, 'static', filepath), headers={
-                            'content-type': 'image/png'})
+    response = FileResponse(os.path.join(BASE_DIR, 'static', filepath),
+                            headers={'content-type': 'image/png'})
     return response
