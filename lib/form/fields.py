@@ -105,9 +105,13 @@ class AnyField(Field):
     you should set validators or validator_func on form class
     """
 
-    def __init__(self, default=None, error_messages={}, validators=[], label='', help_text='', **kwargs):
-        super(AnyField, self).__init__(default=default, error_messages=error_messages,
-                                       validators=validators, label=label, help_text=help_text, **kwargs)
+    def __init__(self, default=None, error_messages={}, validators=[],
+                 label='', help_text='', **kwargs):
+        super(AnyField, self).__init__(default=default,
+                                       error_messages=error_messages,
+                                       validators=validators,
+                                       label=label, help_text=help_text,
+                                       **kwargs)
         self.required = False
 
     def to_internal_value(self, data):
@@ -160,8 +164,10 @@ class CharField(Field):
     default_error_messages = {
         'invalid': 'Not a valid string.',
         'blank': 'This field may not be blank.',
-        'max_length': 'Ensure this field has no more than {max_length} characters.',
-        'min_length': 'Ensure this field has at least {min_length} characters.',
+        'max_length': 'Ensure this field has no more than {max_length}\
+             characters.',
+        'min_length': 'Ensure this field has at least {min_length} \
+            characters.',
     }
 
     def __init__(self, max_length=None, min_length=None,
@@ -208,7 +214,8 @@ class IntegerField(Field):
     default_error_messages = {
         'invalid': 'A valid integer is required.',
         'max_value': 'Ensure this value is less than or equal to {max_value}.',
-        'min_value': 'Ensure this value is greater than or equal to {min_value}.',
+        'min_value': 'Ensure this value is greater than or equal to\
+             {min_value}.',
         'max_string_length': 'String value too large.'
     }
     MAX_STRING_LENGTH = 1000
@@ -220,7 +227,8 @@ class IntegerField(Field):
 
     def to_internal_value(self, data):
 
-        if isinstance(data, six.text_type) and len(data) > self.MAX_STRING_LENGTH:
+        if isinstance(data, six.text_type) \
+                and len(data) > self.MAX_STRING_LENGTH:
             self.fail('max_string_length')
         try:
             data = int(float(data))  # 数字字符串不能直接转为int类型
@@ -237,7 +245,8 @@ class FloatField(Field):
     default_error_messages = {
         'invalid': 'A valid number is required.',
         'max_value': 'Ensure this value is less than or equal to {max_value}.',
-        'min_value': 'Ensure this value is greater than or equal to {min_value}.',
+        'min_value': 'Ensure this value is greater than or equal\
+             to {min_value}.',
         'max_string_length': 'String value too large.'
     }
     MAX_STRING_LENGTH = 1000  #
@@ -248,7 +257,8 @@ class FloatField(Field):
         super(FloatField, self).__init__(**kwargs)
 
     def to_internal_value(self, data):
-        if isinstance(data, six.text_type) and len(data) > self.MAX_STRING_LENGTH:
+        if isinstance(data, six.text_type) and\
+                len(data) > self.MAX_STRING_LENGTH:
             self.fail('max_string_length')
         try:
             data = float(data)
@@ -268,15 +278,20 @@ class DecimalField(Field):
     default_error_messages = {
         'invalid': 'A valid number is required.',
         'max_value': 'Ensure this value is less than or equal to {max_value}.',
-        'min_value': 'Ensure this value is greater than or equal to {min_value}.',
-        'max_digits': 'Ensure that there are no more than {max_digits} digits in total.',
-        'max_decimal_places': 'Ensure that there are no more than {max_decimal_places} decimal places.',
-        'max_whole_digits': 'Ensure that there are no more than {max_whole_digits} digits before the decimal point.',
+        'min_value': 'Ensure this value is greater than or equal\
+             to {min_value}.',
+        'max_digits': 'Ensure that there are no more than {max_digits}\
+             digits in total.',
+        'max_decimal_places': 'Ensure that there are no more than\
+             {max_decimal_places} decimal places.',
+        'max_whole_digits': 'Ensure that there are no more than\
+             {max_whole_digits} digits before the decimal point.',
         'max_string_length': 'String value too large.'
     }
     MAX_STRING_LENGTH = 1000  # Guard against malicious string inputs.
 
-    def __init__(self, max_digits, decimal_places, max_value=None, min_value=None, **kwargs):
+    def __init__(self, max_digits, decimal_places, max_value=None,
+                 min_value=None, **kwargs):
         self.max_digits = max_digits
         self.decimal_places = decimal_places
 
@@ -335,10 +350,12 @@ class DecimalField(Field):
 
         if self.max_digits is not None and total_digits > self.max_digits:
             self.fail('max_digits', max_digits=self.max_digits)
-        if self.decimal_places is not None and decimal_places > self.decimal_places:
+        if self.decimal_places is not None and\
+                decimal_places > self.decimal_places:
             self.fail('max_decimal_places',
                       max_decimal_places=self.decimal_places)
-        if self.max_whole_digits is not None and whole_digits > self.max_whole_digits:
+        if self.max_whole_digits is not None and\
+                whole_digits > self.max_whole_digits:
             self.fail('max_whole_digits',
                       max_whole_digits=self.max_whole_digits)
 
@@ -350,7 +367,8 @@ class DecimalField(Field):
 
 class DateTimeField(Field):
     default_error_messages = {
-        'invalid': 'Datetime has wrong format. Use this format instead: {format}.',
+        'invalid': 'Datetime has wrong format. Use this\
+             format instead: {format}.',
         'date': 'Expected a datetime but got a date.',
     }
     datetime_parser = datetime.datetime.strptime
@@ -377,7 +395,8 @@ class DateTimeField(Field):
 
 class DateField(DateTimeField):
     default_error_messages = {
-        'invalid': 'Date has wrong format. Use one of these formats instead: {format}.',
+        'invalid': 'Date has wrong format. Use one of\
+             these formats instead: {format}.',
         'datetime': 'Expected a date but got a datetime.',
     }
 
@@ -464,8 +483,10 @@ class MultiChoiceField(Field):
                 if item == choice[0]:
                     result.append(item)
         if result == []:
-            self.fail('invalid', value=','.join([str(i) for i in data]),
-                      choices=','.join([str(choice[0]) for choice in self.choices]))
+            self.fail('invalid',
+                      value=','.join([str(i) for i in data]),
+                      choices=','.join([str(choice[0])
+                                        for choice in self.choices]))
         return result
 
 
@@ -473,7 +494,8 @@ class ListField(Field):
     default_error_messages = {
         'not_a_list': 'Expected a list of items but got type "{input_type}".',
         'min_length': 'Ensure this field has at least {min_length} elements.',
-        'max_length': 'Ensure this field has no more than {max_length} elements.'
+        'max_length': 'Ensure this field has no more than\
+             {max_length} elements.'
     }
 
     def __init__(self, item_field, max_length=None, min_length=None, **kwargs):
@@ -490,7 +512,8 @@ class ListField(Field):
             for index, item in enumerate(data):
                 if not isinstance(item, dict):
                     raise ValidationError(
-                        {index: f'Expected a dict but got type {type(item).__name__}'})
+                        {index: f'Expected a dict but got\
+                             type {type(item).__name__}'})
                 item_obj = self.item_field.form_class(item)
                 if await item_obj.is_valid():
                     result.append(item_obj.validated_data)

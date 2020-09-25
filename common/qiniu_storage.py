@@ -1,8 +1,8 @@
 from qiniu import Auth
 from qiniu import put_data
-import requests
 
-from config import QINIU_ACCESS_KEY, QINIU_SECRET_KEY, QINIU_BUCKET_NAME, QINIU_TOKEN_EXPIRE
+from config import (QINIU_ACCESS_KEY, QINIU_SECRET_KEY,
+                    QINIU_BUCKET_NAME, QINIU_TOKEN_EXPIRE)
 
 
 def generate_upload_token():

@@ -21,7 +21,8 @@ class FormMeta(type):
         for base in reversed(bases):
             for field_name, field in getattr(base, '_fields', {}).items():
                 fields[field_name] = field
-            for field_name, field in getattr(base, '_required_fields', {}).items():
+            for field_name, field in \
+                    getattr(base, '_required_fields', {}).items():
                 required_fields[field_name] = field
 
         return fields, required_fields

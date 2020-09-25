@@ -9,13 +9,16 @@ from fastapi.responses import Response
 app = FastAPI()
 
 
-@app.api_route('/', methods=['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS', 'HEAD'])
+@app.api_route('/',
+               methods=['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS', 'HEAD'])
 async def index(request: Request):
 
     data = {
         'method': request.method,
         'url': request.url._url,
-        'query_params': {key: value for key, value in request.query_params.items()},
+        'query_params': {key: value
+                         for key, value in
+                         request.query_params.items()},
         'headers': {key: value for key, value in request.headers.items()},
         'body': (await request.body()).decode(),
         'cookies': {key: value for key, value in request.cookies.items()}

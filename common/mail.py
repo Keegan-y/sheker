@@ -3,7 +3,8 @@ import ssl
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
 
-from config import MAIL_HOST, MAIL_PORT, MAIL_SENDER, MAIL_CODE, WEB_SERVER_DOMAIN, RESET_PASSOWD_PAGE_URL
+from config import (MAIL_HOST, MAIL_PORT, MAIL_SENDER, MAIL_CODE,
+                    WEB_SERVER_DOMAIN, RESET_PASSOWD_PAGE_URL)
 
 
 def login_mail_server():
@@ -37,7 +38,8 @@ def create_ressetpassword_mail(receiver_email, token):
     <html>
     <body>
         <p>Hi,<br>
-        请点击一下连接重置密码: <strong>{WEB_SERVER_DOMAIN}{RESET_PASSOWD_PAGE_URL}?token={token}<strong> <br/>
+        请点击一下连接重置密码:
+<strong>{WEB_SERVER_DOMAIN}{RESET_PASSOWD_PAGE_URL}?token={token}<strong> <br/>
         </p>
         <p>
         <strong>连接有效时间 2 小时!<strong>
@@ -82,10 +84,10 @@ def create_code_mail(receiver_email, code):
 def send_mail_code(receiver_email, code):
 
     message = create_code_mail(receiver_email, code)
-    main_server.sendmail(MAIL_SENDER, receiver_email, message)
+    mail_server.sendmail(MAIL_SENDER, receiver_email, message)
 
 
 def send_mail_reset(receiver_email, token):
 
     message = create_ressetpassword_mail(receiver_email, token)
-    main_server.sendmail(MAIL_SENDER, receiver_email, message)
+    mail_server.sendmail(MAIL_SENDER, receiver_email, message)

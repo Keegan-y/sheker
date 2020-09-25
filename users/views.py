@@ -117,8 +117,10 @@ async def update_password(data: UpdatePassword):
             'message': "密码不匹配"
         }
     await mongodb.users.update_one({'email': userinfo['email']},
-                                   {'$set': {'password': gen_password(data.password)}})
-    userinfo = await mongodb.users.find_one({'email': userinfo['email']}, {'password': 0})
+                                   {'$set': {'password':
+                                             gen_password(data.password)}})
+    userinfo = await mongodb.users.find_one({'email': userinfo['email']},
+                                            {'password': 0})
 
     token = gen_token(userinfo)
     response = JSONResponse(content=success_response({'token': token}))

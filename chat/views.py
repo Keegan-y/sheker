@@ -65,7 +65,8 @@ class ConnectionManager:
         token = cookies.get('token', '')
         is_valid, userinfo = check_token(token)
         if not is_valid:
-            await websocket.send_text(json.dumps({'message': {'type': "sys", 'code': 401, 'content': '未登录'}}, ensure_ascii=True))
+            data = {'message': {'type': "sys", 'code': 401, 'content': '未登录'}}
+            await websocket.send_text(json.dumps(data, ensure_ascii=True))
             return False
         else:
             self.active_connections.append(websocket)
