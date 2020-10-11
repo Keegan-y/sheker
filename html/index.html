@@ -100,6 +100,7 @@
             <input type="file" style="display: none;" id='image' onchange="fileChange()">
             <button onclick="sendMessage()">发送</button>
             <button onclick="sendImage()">发送图片</button>
+            <button onclick="sendImage()">修改名称</button>
         </div>
     </div>
 
@@ -202,13 +203,14 @@
 
         function sendMessage(event) {
             var input = document.getElementById("messageText")
-            var data = {
-                "type": "text",
-                "content": input.value
+            if (input.value) {
+                var data = {
+                    "type": "text",
+                    "content": input.value
+                }
+                ws.send(JSON.stringify(data))
+                input.value = ''
             }
-
-            ws.send(JSON.stringify(data))
-            input.value = ''
         }
     </script>
 </body>
