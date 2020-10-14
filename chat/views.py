@@ -101,7 +101,7 @@ async def websocket_endpoint(websocket: WebSocket):
         return ''
     userinfo = manager.get_userinfo(websocket)
     try:
-        last_10_msgs=mongodb.messages.find({}).sort([('time',1)]).limit(20)
+        last_10_msgs=mongodb.messages.find({}).sort([('time',-1)]).limit(30)
         async for msg in last_10_msgs:
             await websocket.send_text(json.dumps(msg))
         while True:
