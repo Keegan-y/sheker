@@ -102,7 +102,7 @@ async def websocket_endpoint(websocket: WebSocket):
     userinfo = manager.get_userinfo(websocket)
     try:
         count = await mongodb.messages.count_documents({})
-        last_10_msgs = mongodb.messages.find({}).offset(count).limit(30)
+        last_10_msgs = mongodb.messages.find({}).skip(count).limit(30)
         async for msg in last_10_msgs:
             await websocket.send_text(json.dumps(msg))
         while True:
