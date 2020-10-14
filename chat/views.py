@@ -94,12 +94,16 @@ manager = ConnectionManager()
 
 @app.websocket("/ws")
 async def websocket_endpoint(websocket: WebSocket):
+
     ok = await manager.connect(websocket)
     if not ok:
         await websocket.close()
         return ''
     userinfo = manager.get_userinfo(websocket)
     try:
+        last_10_msgs=mongodb.messages.find({}).sort([('time',1)]).limit(20)
+        async for msg in last_10_msgs:
+            websocket.send_text(json.dumps(msg))
         while True:
             data = await websocket.receive_text()
             json_data = json.loads(data)
