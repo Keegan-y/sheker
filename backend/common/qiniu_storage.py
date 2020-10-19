@@ -1,7 +1,7 @@
 from qiniu import Auth
 from qiniu import put_data
 
-from config import (QINIU_ACCESS_KEY, QINIU_SECRET_KEY,
+from backend.config import (QINIU_ACCESS_KEY, QINIU_SECRET_KEY,
                     QINIU_BUCKET_NAME, QINIU_TOKEN_EXPIRE)
 
 

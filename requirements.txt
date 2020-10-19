@@ -6,3 +6,5 @@ redis
 qiniu
 aiofiles
 python-multipart
+wsproto
+websockets

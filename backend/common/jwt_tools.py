@@ -2,7 +2,7 @@ from datetime import datetime, timedelta
 
 import jwt
 
-from config import JWT_AL, JWT_SECRET, JWT_EX, MAIL_EX
+from backend.config import JWT_AL, JWT_SECRET, JWT_EX, MAIL_EX
 
 
 def gen_token(data, expire=JWT_EX):

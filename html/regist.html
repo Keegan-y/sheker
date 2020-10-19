@@ -68,7 +68,8 @@
             <input type="text" name="email_code" id="email_code" placeholder="邮箱验证码">
             <span class="button" id="get_email_code" onclick="getEmailCode()">获取验证码</span><br />
             <select name="group" id="group">
-                <option value="py37" selected>上海 python37</option>
+              <option value="py37" selected>上海 python37</option>
+              <option value="py38" selected>上海 python38</option>
             </select>
         </form>
         <br>
@@ -77,10 +78,10 @@
 </body>
 <script>
 
-    function getEmailCode() {
-        document.getElementById('get_email_code').innerHTML = '获取中........'
-        var xhr = new XMLHttpRequest()
-        var email = document.getElementById('email').value
+  function getEmailCode() {
+    document.getElementById('get_email_code').innerHTML = '获取中........'
+    var xhr = new XMLHttpRequest()
+    var email = document.getElementById('email').value
         xhr.onreadystatechange = function () {
             if (xhr.readyState == 4) {
                 var result = JSON.parse(xhr.responseText)
@@ -117,7 +118,10 @@
         xhr.send(JSON.stringify(data))
         var result = JSON.parse(xhr.responseText)
         if (result.code != 0) {
-            alert(result.message)
+            var keys = Object.keys(result.message)
+            for(let i =0;i<keys.length;i++){
+                alert(keys[i]+':'+result.message[keys[i]])
+            }
         } else {
             window.location = '/'
         }

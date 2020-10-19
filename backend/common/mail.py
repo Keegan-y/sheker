@@ -3,7 +3,7 @@ import ssl
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
 
-from config import (MAIL_HOST, MAIL_PORT, MAIL_SENDER, MAIL_CODE,
+from backend.config import (MAIL_HOST, MAIL_PORT, MAIL_SENDER, MAIL_CODE,
                     WEB_SERVER_DOMAIN, RESET_PASSOWD_PAGE_URL)
 
 

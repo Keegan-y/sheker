@@ -1,6 +1,6 @@
 import motor.motor_asyncio
 
-from config import MONGO_HOST, MONGO_PORT, MONGO_DBNAME
+from backend.config import MONGO_HOST, MONGO_PORT, MONGO_DBNAME
 client = motor.motor_asyncio.AsyncIOMotorClient(MONGO_HOST, MONGO_PORT)
 mongodb = client[MONGO_DBNAME]
 

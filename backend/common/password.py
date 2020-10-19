@@ -1,6 +1,6 @@
 from hashlib import md5
 
-from config import JWT_SECRET
+from backend.config import JWT_SECRET
 
 
 def gen_password(white):

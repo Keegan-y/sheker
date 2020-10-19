@@ -1,5 +1,8 @@
 import os
-BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+BASE_DIR = os.path.dirname(os.path.dirname(
+    os.path.dirname(os.path.abspath(__file__))))
+
+TEMPLATE_DIR = os.path.join(BASE_DIR, 'html')
 
 WEB_SERVER_DOMAIN = "https://www.mering.live"
 WEB_SERVER_DOMAIN = "http://localhost:8000"
@@ -15,6 +18,7 @@ MAIL_EX = 300
 
 REDIS_HOST = '127.0.0.1'
 REDIS_PORT = 6379
+REDIS_POOL_URL = 'redis://127.0.0.1:6379'
 
 MONGO_HOST = '127.0.0.1'
 MONGO_PORT = 27017

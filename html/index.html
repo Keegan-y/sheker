@@ -100,7 +100,7 @@
             <input type="file" style="display: none;" id='image' onchange="fileChange()">
             <button onclick="sendMessage()">发送</button>
             <button onclick="sendImage()">发送图片</button>
-            <button onclick="sendImage()">修改名称</button>
+            <!-- <button onclick="sendImage()">修改名称</button> -->
         </div>
     </div>
 
@@ -189,7 +189,7 @@
             };
             ws.onerror = function (ev) {
                 console.log(ev)
-                alert("无法连接服务器")
+                console.log("无法连接服务器")
             }
             return ws
         }
