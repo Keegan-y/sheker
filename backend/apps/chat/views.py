@@ -57,13 +57,12 @@ async def websocket_endpoint(websocket: WebSocket):
         await websocket.close()
         return None
     try:
-        count = await mongodb.messages.count_documents({})-30
+        query = {'userinfo.group': userinfo['group']}
+        count = await mongodb.messages.count_documents(query)-30
         if count > 0:
-            recent_msgs = mongodb.messages.find(
-                {'userinfo.group': userinfo['group']}).skip(count)
+            recent_msgs = mongodb.messages.find(query).skip(count)
         else:
-            recent_msgs = mongodb.messages.find(
-                {'userinfo.group': userinfo['group']})
+            recent_msgs = mongodb.messages.find(query)
         async for msg in recent_msgs:
             await websocket.send_text(json.dumps(msg))
         while True:
