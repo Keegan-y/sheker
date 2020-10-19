@@ -37,7 +37,7 @@ async def upload_token():
 async def send_email(email: str):
     code = f'{random.randint(100000,999999):06}'
     redis.set(f'{email}_code', code, ex=300)
-    send_mail_code(email, code)
+    # send_mail_code(email, code)
     return success_response({'email_code': code})
 
 

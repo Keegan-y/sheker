@@ -52,7 +52,8 @@ class UserRegistForm(form.BaseForm):
         if not email_code or email_code != request_email_code:
             raise form.ValidationError('验证码不争取')
         user_exits = await mongodb.users.find_one(
-            {'email': validated_data['email']},
+            {'email': validated_data['email'],
+             'group': validated_data['group']},
             {'_id': 1})
         if user_exits:
             raise form.ValidationError('用户已经存在')
