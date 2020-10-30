@@ -10,7 +10,7 @@ from backend.common.mail import send_mail_code, send_mail_reset
 from backend.common.jwt_tools import gen_mail_token, gen_token, check_token
 from backend.common.password import gen_password
 from backend.common.qiniu_storage import generate_upload_token
-from backend.common.response import success_response
+from backend.common.response import success_response, error_response
 from backend.config import BASE_DIR
 
 from backend.apps.users.form import (Login, UpdatePassword, UserRegistForm)
@@ -77,6 +77,24 @@ async def regist(data: Request):
         'code': 400,
         'message': form.errors
     }
+
+
+@app.post('/update_info')
+async def update_info(data: Request):
+    json_data = await data.json()
+    name = json_data.get('name', None)
+    if not name:
+        return error_response(message='参数不合法')
+    token = data.cookies.get('token')
+    is_valid, userinfo = check_token(token)
+    if not is_valid:
+        return error_response(message="未登录")
+    await mongodb.users.update_one({'_id': userinfo['_id']}, {'$set': {'name': name}})
+    response = JSONResponse({'code': 0})
+    userinfo['name'] = name
+    token = gen_token(userinfo)
+    response.set_cookie('token', token, max_age=7200)
+    return response
 
 
 @app.get('/reset_password')

@@ -56,14 +56,38 @@
             <input type="text" name="name" id="name" placeholder="名称"><br />
         </form>
         <div id='actions'>
-            <span onclick="update_password()" class="button">确认</span><br>
+          <span onclick="update_info()" class="button">确认</span><br>
         </div>
 
 
     </div>
 </body>
 <script>
-    function update_password() {
+  function update_info(){
+    var name = document.getElementById('name').value
+    if(!name.replace(' ','')){
+      alert('name 必填')
+
+    }
+    var data = {
+      name:name
+    }
+    var xhr = new XMLHttpRequest()
+    xhr.onreadystatechange = function(){
+      if(xhr.readyState == 4){
+        result = JSON.parse(xhr.responseText)
+        if(result.code!=0){
+          alert(result.message)
+        }else{
+          window.location='/'
+        }
+      }
+    }
+    xhr.open('post','/users/update_info',true)
+    xhr.send(JSON.stringify(data))
+
+  }
+  function update_password() {
         var token = window.location.search.replace('?token=', '')
         var password_ensure = document.getElementById('password_ensure').value
         var password = document.getElementById('password').value

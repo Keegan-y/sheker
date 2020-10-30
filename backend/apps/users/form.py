@@ -40,8 +40,12 @@ class UserRegistForm(form.BaseForm):
     password_ensure = fields.CharField(min_length=8, max_length=16)
     email_code = fields.CharField(max_length=6, min_length=6)
     group = fields.CharField()
+    request_code = fields.CharField()
 
     async def validate(self, validated_data):
+        request_code = validated_data['request_code']
+        if request_code != 'itcast':
+            raise form.ValidationError('注册码不正确')
         password = validated_data['password']
         password_ensure = validated_data['password_ensure']
         if password != password_ensure:
@@ -50,10 +54,9 @@ class UserRegistForm(form.BaseForm):
         email_code = redis.get(key)
         request_email_code = validated_data['email_code']
         if not email_code or email_code != request_email_code:
-            raise form.ValidationError('验证码不争取')
+            raise form.ValidationError('验证码不正确')
         user_exits = await mongodb.users.find_one(
-            {'email': validated_data['email'],
-             'group': validated_data['group']},
+            {'email': validated_data['email']},
             {'_id': 1})
         if user_exits:
             raise form.ValidationError('用户已经存在')

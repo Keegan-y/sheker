@@ -10,6 +10,7 @@ from fastapi.responses import FileResponse
 from fastapi.responses import HTMLResponse, RedirectResponse
 from fastapi.websockets import WebSocketDisconnect, WebSocket
 
+from backend.common.response import success_response
 from backend.common.jwt_tools import check_token
 from backend.common.mongodb import mongodb
 from backend.common.socket_manager import manager
@@ -24,11 +25,25 @@ async def get(token: Optional[str] = Cookie(None)):
     if token:
         is_valid, user = check_token(token)
         if not is_valid:
-            return RedirectResponse('/login_page')
+            return RedirectResponse('/pages/login')
         html = await get_template('index.html')
         return HTMLResponse(html)
 
-    return RedirectResponse('/login_page')
+    return RedirectResponse('/pages/login')
+
+
+@app.get('/pages/{page_name}')
+async def get_page(page_name):
+    html = await get_template(f'{page_name}.html')
+    if html:
+        return HTMLResponse(html)
+    return HTMLResponse('not found', status_code=404)
+
+
+@app.get('/update_info_page')
+async def update_info():
+    html = await get_template('update_info.html')
+    return HTMLResponse(html)
 
 
 @app.get('/login_page')
@@ -48,6 +63,10 @@ async def regist_page():
     html = await get_template('regist.html')
     return HTMLResponse(html)
 
+
+# @app.post('/upload_file')
+# async def upload_file():
+#     return success_response()
 
 @app.websocket("/ws")
 async def websocket_endpoint(websocket: WebSocket):
@@ -75,7 +94,8 @@ async def websocket_endpoint(websocket: WebSocket):
                        'message': json_data,
                        'userinfo': userinfo}
             await mongodb.messages.insert_one(message)
-            await manager.broadcast(userinfo['group'], json.dumps(message))
+            await manager.broadcast(userinfo['group'],
+                                    json.dumps(message))
     except WebSocketDisconnect:
         manager.disconnect(websocket)
         # await manager.broadcast(f"Client left the chat")
@@ -84,7 +104,6 @@ async def websocket_endpoint(websocket: WebSocket):
 @app.get('/static/{filepath:path}')
 async def get_file(filepath: str):
     path = os.path.join(BASE_DIR, 'static', filepath)
-    print(path)
     headers = {'content-type': 'image/png'}
     response = FileResponse(path, headers=headers)
     return response
