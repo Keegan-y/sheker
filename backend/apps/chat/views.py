@@ -10,7 +10,6 @@ from fastapi.responses import FileResponse
 from fastapi.responses import HTMLResponse, RedirectResponse
 from fastapi.websockets import WebSocketDisconnect, WebSocket
 
-from backend.common.response import success_response
 from backend.common.jwt_tools import check_token
 from backend.common.mongodb import mongodb
 from backend.common.socket_manager import manager
